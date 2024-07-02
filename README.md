@@ -1,5 +1,4 @@
 # ldap2synapse: Matrix Synapse Server and LDAP Users Synchronization Service
-
 ## Overview
 
 **ldap2synapse** is a synchronization service designed to integrate user accounts from an LDAP directory into a Matrix Synapse server. This project was created to address the lack of existing solutions for integrating the Matrix protocol into organizations that use Active Directory (AD).
