@@ -38,13 +38,14 @@ The provided script is a synchronization service for LDAP and Matrix Synapse. He
 #### `fetch_ldap_data()`
 - Connects to the LDAP server and retrieves user data based on a specified filter.
 - Extracts relevant user attributes and stores them in a dictionary.
+```
 The following attributes are fetched:
-"sAMAccountName" the base of login of a matrix user;
-"displayName" first name and surname of the user defined in AD;
-"userAccountControl" value defines if the user account is disabled or not;
-"memberOf" checks if the created Synapse user should be an administrator or not: if the user
+- "sAMAccountName" the base of login of a matrix user;
+- "displayName" first name and surname of the user defined in AD;
+- "userAccountControl" value defines if the user account is disabled or not;
+- "memberOf" checks if the created Synapse user should be an administrator or not: if the user
 in AD is a member of  "Domain Admins" AND "Administrators" groups it will be an administrator on Synapse server as well.
-
+```
 #### `fetch_access_token()`
 - Retrieves an access token for the Matrix Synapse server.
 - Registers the core administrator account if it is not already registered.
