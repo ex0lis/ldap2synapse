@@ -125,7 +125,7 @@ To run the synchronization service in a Docker container, follow these steps:
     ```
 
 3. Run the Docker container using Docker Compose:
-    ```sh
+    ```
     docker compose up -d
     ```
 
