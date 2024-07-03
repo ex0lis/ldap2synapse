@@ -100,7 +100,7 @@ This setup ensures that the Matrix Synapse server is kept in sync with the LDAP 
 
 To run the synchronization service in a Docker container, follow these steps:
 
-1. Modify the 'config.ini' to match your enviroment.
+1. Modify the `config.ini` to match your enviroment.
 2. Create or modify existing `docker-compose.yml` file to define the service:
     ```yaml
     version: '3'
