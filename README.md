@@ -3,6 +3,8 @@
 
 **ldap2synapse** is a synchronization service designed to integrate user accounts from an LDAP directory into a Matrix Synapse server. This project was created to address the lack of existing solutions for integrating the Matrix protocol into organizations that use Active Directory (AD).
 
+The docker image is avaliable at **https://hub.docker.com/r/ex0lis/ldap2synapse** or by the name **ex0lis/ldap2synapse**.
+
 ## Important Notice
 
 This code is provided **as-is** and is not optimized for performance. It was not written by a professional programmer but was generated using ChatGPT. While it aims to fulfill its primary function, it may not follow best coding practices and might require adjustments for specific use cases or environments.
