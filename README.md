@@ -131,7 +131,7 @@ To run the synchronization service in a Docker container, follow these steps:
 
 This will start the synchronization service in a Docker container.
 To stop the service use the following command:
-    ```sh
+    ```
     docker compose down
     ```
 ## Contribution
