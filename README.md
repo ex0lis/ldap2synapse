@@ -17,12 +17,7 @@ The code is provided **as-is** and is not optimized for performance. It was not 
 - **LDAP administrative account credentials** 
 - **Docker Engine (to run service in a containerized environment)**
 
-Here's a high-level description of how the code functions:
-
-1. Service starts by importing necessary Python libraries and loading sensitive data (like LDAP and Matrix server details) from a `config.ini`.
-2. Logging is configured to write log to a file (`ldap2synapse.log`) with daily rotation also managing output to the console stdout.
-
-Functions description:
+## Functions description:
 #### `display_synapse_err(response)`
 - Outputs errors returned by the Synapse server.
 
