@@ -1,54 +1,41 @@
 # ldap2synapse: Matrix Synapse Server and LDAP Users Synchronization Service
 ## Overview
 
-**ldap2synapse** is a synchronization service designed to integrate user accounts from an LDAP directory into a Matrix Synapse server. This project was created to address the lack of existing solutions for integrating the Matrix protocol into organizations that use Active Directory (AD).
+**ldap2synapse** - is a microservice designed to synchronize user accounts from an LDAP directory with a Matrix Synapse server user accounts. 
 
-The docker image is avaliable at **https://hub.docker.com/r/ex0lis/ldap2synapse** or by the name **ex0lis/ldap2synapse**.
+This project was created to address the lack of existing solutions for integrating the Matrix protocol into organizations that use Active Directory (AD).
+
+The docker image is avaliable at: **https://hub.docker.com/r/ex0lis/ldap2synapse**
 
 ## Important Notice
 
-This code is provided **as-is** and is not optimized for performance. It was not written by a professional programmer but was generated using ChatGPT. While it aims to fulfill its primary function, it may not follow best coding practices and might require adjustments for specific use cases or environments.
-
-## Features
-
-- **Automated Synchronization:** Sync user accounts from your LDAP directory to the Matrix Synapse server.
-- **Customizable Mapping:** Basic configuration options to map LDAP attributes to Matrix Synapse user attributes.
-- **Batch Sync:** Schedule periodic batch synchronization to ensure consistency without constant monitoring.
-- **Logging:** Basic logging and monitoring for synchronization processes to help with troubleshooting.
+The code is provided **as-is** and is not optimized for performance. It was not written by a professional programmer **but was generated using ChatGPT**. While it aims to fulfill its primary function, it may not follow best coding practices and might require adjustments for specific use cases or environments.
 
 ## Requirements
 
-- **Matrix Synapse Server:** A running instance of the Matrix Synapse server.
-- **LDAP Directory:** Access to an LDAP directory with user account information.
-- **Docker:** To run the synchronization service in a containerized environment.
+- **A running instance of the Matrix Synapse server**
+- **LDAP administrative account credentials** 
+- **Docker Engine (to run service in a containerized environment)**
 
-The provided script is a synchronization service for LDAP and Matrix Synapse. Here's a high-level description of how the code functions:
+Here's a high-level description of how the code functions:
 
-### 1. **Configuration Loading**
-- The script starts by importing necessary libraries.
-- It then loads sensitive data (like LDAP and Matrix server details) from a `config.ini` file using the `ConfigParser` library.
+1. Service starts by importing necessary Python libraries and loading sensitive data (like LDAP and Matrix server details) from a `config.ini`.
+2. Logging is configured to write log to a file (`ldap2synapse.log`) with daily rotation also managing output to the console stdout.
 
-### 2. **Logging Setup**
-- Logging is configured to write logs to a file (`ldap2synapse.log`) with daily rotation and to the console.
-- Two handlers are set up: one for writing to the log file and another for printing to stdout.
-
-### 3. **Helper Functions**
-
+Functions description:
 #### `display_synapse_err(response)`
-- Logs errors returned by the Synapse server.
+- Outputs errors returned by the Synapse server.
 
 #### `fetch_ldap_data()`
-- Connects to the LDAP server and retrieves user data based on a specified filter.
+- Connects to the LDAP server and retrieves user data based using specified filter.
 - Extracts relevant user attributes and stores them in a dictionary.
-```sh
 The following attributes are fetched:
-- "sAMAccountName" the base of login of a matrix user;
-- "displayName" first name and surname of the user defined in AD;
-- "userAccountControl" value defines if the user account is disabled or not;
-- "memberOf" checks if the created Synapse user should be an administrator or not: if the user
-in AD is a member of  "Domain Admins" AND "Administrators" groups it will
-be an administrator on Synapse server as well.
-```
+  - "sAMAccountName" the base of login of a matrix user;
+  - "displayName" first name and surname of the user defined in Active Directory;
+  - "userAccountControl" value defines if the user account is disabled or not;
+  - "memberOf" checks if the created Synapse user should be an administrator or not: if the user in Active Directory is a member of  "Domain Admins" AND "Administrators" groups it will
+become an administrator on Synapse server as well.
+
 #### `fetch_access_token()`
 - Retrieves an access token for the Matrix Synapse server.
 - Registers the core administrator account if it is not already registered.
@@ -64,41 +51,37 @@ be an administrator on Synapse server as well.
 - Retrieves a list of users registered on the Matrix Synapse server.
 
 #### `delete_user(user_id, access_token)`
-- Deletes user data and deactivates the user on the Matrix Synapse server.
+- Deletes user data and deactivates the user account on the Matrix Synapse server for users that are not present in LDAP.
 
 #### `update_user_data(user_id, update_payload, access_token)`
 - Updates user attributes on the Matrix Synapse server.
 
-#### `load_deleted_users(deleted_users_list)`
-- Loads a list of deleted users from a file.
-
 #### `save_deleted_users(deleted_users_list, deleted_users)`
 - Saves the list of deleted users to a file.
 
+#### `load_deleted_users(deleted_users_list)`
+- Loads a list of deleted users from a file.
+
 #### `compare_and_update(ldap_users_data, registered_users, access_token)`
-- Compares LDAP users with registered Matrix users.
-- Updates user attributes or deletes users as necessary.
+- Compares LDAP users with registered Matrix users and pdates user attributes or deletes users as necessary.
 
 #### `register_unregistered(ldap_users_data, registered_users)`
 - Registers users that exist in LDAP but not on the Matrix server.
 
-### 4. **Main Function**
+**Main Function Structure:**
 
 #### `main()`
-- Orchestrates the synchronization process:
-  1. Retrieves an access token.
-  2. Fetches registered users from the Matrix server.
-  3. Fetches user data from LDAP.
-  4. Registers any unregistered users.
-  5. Compares and updates user data.
+1) Retrieves an access token.
+2) Fetches registered users from the Matrix server.
+3) Fetches user data from LDAP.
+4) Registers any unregistered users.
+5) Compares and updates user data.
 
-### 5. **Continuous Synchronization**
-
-- The script runs in an infinite loop, invoking the `main()` function and then sleeping for a specified period before the next synchronization cycle.
+The script runs in an infinite loop, invoking the `main()` function and then sleeping for a specified period (default is 1 hour) before the next synchronization cycle.
 
 This setup ensures that the Matrix Synapse server is kept in sync with the LDAP directory, reflecting changes in user accounts, whether they are additions, updates, or deletions. The logging mechanism provides detailed insights into the synchronization process and helps in troubleshooting any issues that arise.
 
-## Docker Setup
+## Docker Compose Setup
 
 To run the synchronization service in a Docker container, follow these steps:
 
@@ -126,12 +109,12 @@ To run the synchronization service in a Docker container, follow these steps:
          #     condition: service_healthy
     ```
 
-3. Run the Docker container using Docker Compose:
+3. Run the setup using Docker Compose:
     ```
     docker compose up -d
     ```
 
-This will start the synchronization service in a Docker container.
+This will start the synchronization service in a containerized environment.
 To stop the service use the following command:
     ```
     docker compose down
